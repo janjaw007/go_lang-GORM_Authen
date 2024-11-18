@@ -1,0 +1,20 @@
+# Binaries and build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+*.out
+
+# Test binaries
+*.test
+
+# Vendor directory
+/vendor/
+
+# IDE/editor specific files
+.idea/
+.vscode/
+
+
+.env
+backups/
