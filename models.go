@@ -24,3 +24,14 @@ func createBook(db *gorm.DB, book *Book) {
 
 	fmt.Println("Create Book successful!")
 }
+
+func getBook(db *gorm.DB, id uint) *Book {
+	var book Book
+	result := db.First(&book, id)
+
+	if result.Error != nil {
+		log.Fatalf("Error get book: %v", result.Error)
+	}
+
+	return &book
+}

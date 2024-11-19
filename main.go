@@ -56,12 +56,18 @@ func main() {
 	// CRUD
 	// Create
 
-	newBook := &Book{
-		Name:        "JanJaoAdventure",
-		Author:      "JanJao",
-		Description: "JanJao WebDev Journey",
-		Price:       500,
-	}
+	// newBook := &Book{
+	// 	Name:        "JanJaoAdventure",
+	// 	Author:      "JanJao",
+	// 	Description: "JanJao WebDev Journey",
+	// 	Price:       500,
+	// }
 
-	createBook(db, newBook)
+	// createBook(db, newBook)
+
+	// Get
+	currentBook := getBook(db, 1)
+
+	fmt.Println("current Book is ", currentBook)
+
 }
