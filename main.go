@@ -52,4 +52,16 @@ func main() {
 	// AutoMigrate Recive 2 argument (struct, ) that strcut is structure for tables will be create
 	db.AutoMigrate(&Book{})
 	fmt.Println("Migrate successful!")
+
+	// CRUD
+	// Create
+
+	newBook := &Book{
+		Name:        "JanJaoAdventure",
+		Author:      "JanJao",
+		Description: "JanJao WebDev Journey",
+		Price:       500,
+	}
+
+	createBook(db, newBook)
 }

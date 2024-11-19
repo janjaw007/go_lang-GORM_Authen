@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"log"
+
 	"gorm.io/gorm"
 )
 
@@ -9,5 +12,15 @@ type Book struct {
 	Name        string
 	Author      string
 	Description string
-	price       uint
+	Price       uint
+}
+
+func createBook(db *gorm.DB, book *Book) {
+	result := db.Create(book)
+
+	if result.Error != nil {
+		log.Fatalf("Error creating book: %v", result.Error)
+	}
+
+	fmt.Println("Create Book successful!")
 }
