@@ -31,4 +31,8 @@ func main() {
 
 	fmt.Println(db)
 	fmt.Println("Connect Successful!")
+
+	// AutoMigrate will compare struct and table on sql
+	// AutoMigrate Recive 2 argument (struct, ) that strcut is structure for tables will be create
+	db.AutoMigrate(&Book{})
 }
