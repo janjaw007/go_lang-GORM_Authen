@@ -85,5 +85,8 @@ func main() {
 	// fmt.Println(currentBook)
 
 	currentBook := searchBooksbyAuthor(db, "JanJao")
-	fmt.Println(currentBook)
+
+	for _, book := range currentBook {
+		fmt.Println(book.ID, book.Name, book.Author, book.Price)
+	}
 }

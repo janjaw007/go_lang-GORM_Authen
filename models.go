@@ -72,7 +72,7 @@ func searchBook(db *gorm.DB, bookName string) *Book {
 func searchBooksbyAuthor(db *gorm.DB, authorName string) []Book {
 	var books []Book
 
-	result := db.Where("author = ?", authorName).Find(&books)
+	result := db.Where("author = ?", authorName).Order("price desc").Find(&books)
 
 	if result.Error != nil {
 		log.Fatalf("Error Not Found book:%v", result.Error)
