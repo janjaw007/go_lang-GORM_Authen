@@ -80,8 +80,10 @@ func main() {
 	// deleteBook(db, 1)
 
 	// Seacrh Function
-	currentBook := searchBook(db, "JanJaoExcited")
+	// currentBook := searchBook(db, "JanJaoExcited")
 
+	// fmt.Println(currentBook)
+
+	currentBook := searchBooksbyAuthor(db, "JanJao")
 	fmt.Println(currentBook)
-
 }
