@@ -57,10 +57,10 @@ func main() {
 	// Create
 
 	// newBook := &Book{
-	// 	Name:        "JanJaoAdventure",
+	// 	Name:        "JanJaoExcited",
 	// 	Author:      "JanJao",
-	// 	Description: "JanJao WebDev Journey",
-	// 	Price:       500,
+	// 	Description: "JanJao WebDev Explore",
+	// 	Price:       700,
 	// }
 
 	// createBook(db, newBook)
@@ -79,7 +79,9 @@ func main() {
 
 	// deleteBook(db, 1)
 
-	currentBook := getBook(db, 1)
+	// Seacrh Function
+	currentBook := searchBook(db, "JanJaoExcited")
 
 	fmt.Println(currentBook)
+
 }

@@ -56,3 +56,15 @@ func deleteBook(db *gorm.DB, id uint) {
 
 	fmt.Println("Delete Book successful!")
 }
+
+func searchBook(db *gorm.DB, bookName string) *Book {
+	var book Book
+
+	result := db.Where("name = ?", bookName).First(&book)
+
+	if result.Error != nil {
+		log.Fatalf("Error Not Found book:%v", result.Error)
+	}
+
+	return &book
+}
