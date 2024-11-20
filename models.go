@@ -35,3 +35,13 @@ func getBook(db *gorm.DB, id uint) *Book {
 
 	return &book
 }
+
+func updateBook(db *gorm.DB, book *Book) {
+	result := db.Save(&book)
+
+	if result.Error != nil {
+		log.Fatalf("Error update book:%v", result.Error)
+	}
+
+	fmt.Println("Updated Book successful!")
+}

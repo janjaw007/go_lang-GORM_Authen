@@ -67,7 +67,12 @@ func main() {
 
 	// Get
 	currentBook := getBook(db, 1)
+	// fmt.Println("current Book is ", currentBook)
 
-	fmt.Println("current Book is ", currentBook)
+	// Update
+	currentBook.Name = "New Jao"
+	currentBook.Price = 1000
+
+	updateBook(db, currentBook)
 
 }
