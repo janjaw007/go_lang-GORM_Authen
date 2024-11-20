@@ -66,13 +66,20 @@ func main() {
 	// createBook(db, newBook)
 
 	// Get
+	// currentBook := getBook(db, 1)
+	// // fmt.Println("current Book is ", currentBook)
+
+	//  Update
+	// currentBook.Name = "New Jao"
+	// currentBook.Price = 1000
+
+	// updateBook(db, currentBook)
+
+	// Delete
+
+	// deleteBook(db, 1)
+
 	currentBook := getBook(db, 1)
-	// fmt.Println("current Book is ", currentBook)
 
-	// Update
-	currentBook.Name = "New Jao"
-	currentBook.Price = 1000
-
-	updateBook(db, currentBook)
-
+	fmt.Println(currentBook)
 }

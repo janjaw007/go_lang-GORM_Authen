@@ -45,3 +45,14 @@ func updateBook(db *gorm.DB, book *Book) {
 
 	fmt.Println("Updated Book successful!")
 }
+
+func deleteBook(db *gorm.DB, id uint) {
+	var book Book
+
+	result := db.Delete(&book, id)
+	if result.Error != nil {
+		log.Fatalf("Error Delete book:%v", result.Error)
+	}
+
+	fmt.Println("Delete Book successful!")
+}
