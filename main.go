@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -53,6 +54,14 @@ func main() {
 	db.AutoMigrate(&Book{})
 	fmt.Println("Migrate successful!")
 
+	app := fiber.New()
+
+	app.Get("/books", func(c *fiber.Ctx) error {
+		return c.JSON(getBooks(db))
+	})
+
+	app.Listen(":8080")
+
 	// CRUD
 	// Create
 
@@ -84,9 +93,9 @@ func main() {
 
 	// fmt.Println(currentBook)
 
-	currentBook := searchBooksbyAuthor(db, "JanJao")
+	// currentBook := searchBooksbyAuthor(db, "JanJao")
 
-	for _, book := range currentBook {
-		fmt.Println(book.ID, book.Name, book.Author, book.Price)
-	}
+	// for _, book := range currentBook {
+	// 	fmt.Println(book.ID, book.Name, book.Author, book.Price)
+	// }
 }

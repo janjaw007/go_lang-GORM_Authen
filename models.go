@@ -9,10 +9,10 @@ import (
 
 type Book struct {
 	gorm.Model
-	Name        string
-	Author      string
-	Description string
-	Price       uint
+	Name        string `json:"name"`
+	Author      string `json:"author"`
+	Description string `json:"description"`
+	Price       uint   `json:"price"`
 }
 
 func createBook(db *gorm.DB, book *Book) {
@@ -34,6 +34,17 @@ func getBook(db *gorm.DB, id uint) *Book {
 	}
 
 	return &book
+}
+
+func getBooks(db *gorm.DB) []Book {
+	var books []Book
+	result := db.Find(&books)
+
+	if result.Error != nil {
+		log.Fatalf("Error get book: %v", result.Error)
+	}
+
+	return books
 }
 
 func updateBook(db *gorm.DB, book *Book) {
