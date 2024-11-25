@@ -15,7 +15,7 @@ type Book struct {
 	Price       uint   `json:"price"`
 }
 
-func createBook(db *gorm.DB, book *Book) {
+func createBook(db *gorm.DB, book *Book) error {
 	result := db.Create(book)
 
 	if result.Error != nil {
@@ -23,6 +23,8 @@ func createBook(db *gorm.DB, book *Book) {
 	}
 
 	fmt.Println("Create Book successful!")
+
+	return nil
 }
 
 func getBook(db *gorm.DB, id uint) *Book {

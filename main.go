@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -58,6 +59,46 @@ func main() {
 
 	app.Get("/books", func(c *fiber.Ctx) error {
 		return c.JSON(getBooks(db))
+	})
+
+	app.Get("/book/:id", func(c *fiber.Ctx) error {
+		var id = c.Params("id")
+		strId, err := strconv.Atoi(id)
+
+		if err != nil {
+			return c.SendStatus(fiber.StatusBadRequest)
+		}
+
+		return c.JSON(getBook(db, uint(strId)))
+	})
+
+	app.Post("/createBook", func(c *fiber.Ctx) error {
+		var book Book
+
+		if err := c.BodyParser(&book); err != nil {
+			return c.SendStatus(fiber.StatusBadRequest)
+		}
+
+		if err := createBook(db, &book); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Failed to create book",
+			})
+		}
+		// Return the created book as a response
+		return c.Status(fiber.StatusCreated).JSON(book)
+	})
+
+	app.Put("updateBook/:id", func(c *fiber.Ctx) error {
+		var id = c.Params("id")
+		var book Book
+		strid, err := strconv.Atoi(id)
+
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid Input"})
+		}
+
+		if err := updateBook(db,)
+
 	})
 
 	app.Listen(":8080")
