@@ -72,7 +72,7 @@ func main() {
 		return c.JSON(getBook(db, uint(strId)))
 	})
 
-	app.Post("/createBook", func(c *fiber.Ctx) error {
+	app.Post("/book/createBook", func(c *fiber.Ctx) error {
 		var book Book
 
 		if err := c.BodyParser(&book); err != nil {
@@ -85,19 +85,54 @@ func main() {
 			})
 		}
 		// Return the created book as a response
-		return c.Status(fiber.StatusCreated).JSON(book)
+		return c.JSON(fiber.Map{
+			"message": "Create Book Successful",
+		})
 	})
 
-	app.Put("updateBook/:id", func(c *fiber.Ctx) error {
-		var id = c.Params("id")
-		var book Book
-		strid, err := strconv.Atoi(id)
+	app.Put("/book/updateBook/:id", func(c *fiber.Ctx) error {
+		id := c.Params("id")
+		strId, err := strconv.Atoi(id)
 
 		if err != nil {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid Input"})
+			return c.SendStatus(fiber.StatusBadRequest)
 		}
 
-		if err := updateBook(db,)
+		book := new(Book)
+
+		book.ID = uint(strId)
+
+		if err := c.BodyParser(book); err != nil {
+			return c.SendStatus(fiber.StatusBadRequest)
+		}
+
+		if err := updateBook(db, book); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Failed to update book",
+			})
+		}
+
+		return c.JSON(fiber.Map{
+			"message": "Update Book Successful",
+		})
+	})
+
+	app.Delete("/book/deleteBook/:id", func(c *fiber.Ctx) error {
+		id := c.Params("id")
+		strId, err := strconv.Atoi(id)
+		if err != nil {
+			return c.SendStatus(fiber.StatusBadRequest)
+		}
+
+		if err := deleteBook(db, uint(strId)); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Failed to delete book",
+			})
+		}
+
+		return c.JSON(fiber.Map{
+			"message": "Delete Book Successful",
+		})
 
 	})
 

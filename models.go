@@ -49,25 +49,25 @@ func getBooks(db *gorm.DB) []Book {
 	return books
 }
 
-func updateBook(db *gorm.DB, book *Book) {
-	result := db.Save(&book)
+func updateBook(db *gorm.DB, book *Book) error {
+	result := db.Model(&book).Updates(book)
 
 	if result.Error != nil {
-		log.Fatalf("Error update book:%v", result.Error)
+		return result.Error
 	}
 
-	fmt.Println("Updated Book successful!")
+	return nil
 }
 
-func deleteBook(db *gorm.DB, id uint) {
+func deleteBook(db *gorm.DB, id uint) error {
 	var book Book
 
 	result := db.Delete(&book, id)
 	if result.Error != nil {
-		log.Fatalf("Error Delete book:%v", result.Error)
+		return result.Error
 	}
 
-	fmt.Println("Delete Book successful!")
+	return nil
 }
 
 func searchBook(db *gorm.DB, bookName string) *Book {
