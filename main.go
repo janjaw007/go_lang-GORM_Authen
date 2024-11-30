@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v4"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -20,6 +21,24 @@ const (
 	password = "mypassword" // as defined in docker-compose.yml
 	dbname   = "mydatabase" // as defined in docker-compose.yml
 )
+
+func authRequired(c *fiber.Ctx) error {
+	cookie := c.Cookies("jwt")
+	jwtSecretKey := "TestSecret"
+
+	token, err := jwt.ParseWithClaims(cookie, jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(jwtSecretKey), nil
+	})
+
+	if err != nil || !token.Valid {
+		return c.SendStatus(fiber.StatusUnauthorized)
+	}
+
+	claim := token.Claims.(jwt.MapClaims) // line 33
+
+	fmt.Println(claim["user_id"])
+	return c.Next()
+}
 
 func main() {
 	// Create Connection String
@@ -56,12 +75,13 @@ func main() {
 	fmt.Println("Migrate successful!")
 
 	app := fiber.New()
+	app.Use("/books", authRequired)
 
 	app.Get("/books", func(c *fiber.Ctx) error {
 		return c.JSON(getBooks(db))
 	})
 
-	app.Get("/book/:id", func(c *fiber.Ctx) error {
+	app.Get("/books/:id", func(c *fiber.Ctx) error {
 		var id = c.Params("id")
 		strId, err := strconv.Atoi(id)
 
@@ -72,7 +92,7 @@ func main() {
 		return c.JSON(getBook(db, uint(strId)))
 	})
 
-	app.Post("/book/createBook", func(c *fiber.Ctx) error {
+	app.Post("/books/createBook", func(c *fiber.Ctx) error {
 		var book Book
 
 		if err := c.BodyParser(&book); err != nil {
@@ -90,7 +110,7 @@ func main() {
 		})
 	})
 
-	app.Put("/book/updateBook/:id", func(c *fiber.Ctx) error {
+	app.Put("/books/updateBook/:id", func(c *fiber.Ctx) error {
 		id := c.Params("id")
 		strId, err := strconv.Atoi(id)
 
@@ -117,7 +137,7 @@ func main() {
 		})
 	})
 
-	app.Delete("/book/deleteBook/:id", func(c *fiber.Ctx) error {
+	app.Delete("/books/deleteBook/:id", func(c *fiber.Ctx) error {
 		id := c.Params("id")
 		strId, err := strconv.Atoi(id)
 		if err != nil {
@@ -138,7 +158,7 @@ func main() {
 
 	// User API
 
-	app.Post("/user/register", func(c *fiber.Ctx) error {
+	app.Post("/register", func(c *fiber.Ctx) error {
 		user := new(User)
 
 		if err := c.BodyParser(user); err != nil {
@@ -154,6 +174,33 @@ func main() {
 		return c.JSON(fiber.Map{
 			"message": "Register Success",
 		})
+	})
+
+	app.Post("/login", func(c *fiber.Ctx) error {
+		user := new(User)
+
+		if err := c.BodyParser(user); err != nil {
+			return c.SendStatus(fiber.StatusBadRequest)
+		}
+
+		token, err := loginUser(db, user)
+
+		if err != nil {
+			return c.SendStatus(fiber.StatusUnauthorized)
+		}
+
+		// keep token in cookies
+		c.Cookie(&fiber.Cookie{
+			Name:     "jwt",
+			Value:    token,
+			Expires:  time.Now().Add(time.Hour * 72),
+			HTTPOnly: true,
+		})
+
+		return c.JSON(fiber.Map{
+			"message": "Login Successful!",
+		})
+
 	})
 
 	app.Listen(":8080")
