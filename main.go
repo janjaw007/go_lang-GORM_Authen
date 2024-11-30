@@ -52,7 +52,7 @@ func main() {
 
 	// AutoMigrate will compare struct and table on sql
 	// AutoMigrate Recive 2 argument (struct, ) that strcut is structure for tables will be create
-	db.AutoMigrate(&Book{})
+	db.AutoMigrate(&Book{}, &User{})
 	fmt.Println("Migrate successful!")
 
 	app := fiber.New()
@@ -134,6 +134,26 @@ func main() {
 			"message": "Delete Book Successful",
 		})
 
+	})
+
+	// User API
+
+	app.Post("/user/register", func(c *fiber.Ctx) error {
+		user := new(User)
+
+		if err := c.BodyParser(user); err != nil {
+			return c.SendStatus(fiber.StatusBadRequest)
+		}
+
+		err = createUser(db, user)
+
+		if err != nil {
+			return c.SendStatus(fiber.StatusBadRequest)
+		}
+
+		return c.JSON(fiber.Map{
+			"message": "Register Success",
+		})
 	})
 
 	app.Listen(":8080")
